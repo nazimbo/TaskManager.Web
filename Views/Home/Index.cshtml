@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Welcome to Task Manager";
+}
+
+<style>
+    .btn-lg {
+        padding: 0.8rem 1.5rem;
+        font-weight: 500;
+    }
+    
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row align-items-center g-5">
+        <!-- Welcome Section -->
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">Organize Your Tasks,<br/>Simplify Your Life</h1>
+            <p class="lead mb-4">Stay organized, meet deadlines, and achieve more with our intuitive task management solution. Start managing your tasks effectively today.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a asp-controller="TodoTask" asp-action="Index" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="bi bi-list-check me-2"></i>View Tasks
+                </a>
+                <a asp-controller="TodoTask" asp-action="Create" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-plus-circle me-2"></i>New Task
+                </a>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="col-lg-6">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
+                                <i class="bi bi-check2-circle text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Easy Task Management</h5>
+                            <p class="card-text text-muted">Create, update, and track your tasks with just a few clicks.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
+                                <i class="bi bi-calendar-check text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Due Date Tracking</h5>
+                            <p class="card-text text-muted">Never miss a deadline with our intuitive due date system.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
+                                <i class="bi bi-laptop text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Responsive Design</h5>
+                            <p class="card-text text-muted">Access your tasks from any device, anywhere, anytime.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: fit-content;">
+                                <i class="bi bi-shield-check text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Secure & Reliable</h5>
+                            <p class="card-text text-muted">Your task data is always secure and backed up.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

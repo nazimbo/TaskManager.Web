@@ -1,0 +1,375 @@
+@model TaskManager.Web.Models.Domain.TodoTask
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<style>
+    .details-card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        overflow: hidden;
+    }
+
+    .header-banner {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        padding: 2rem;
+        color: white;
+        position: relative;
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge.completed {
+        background: rgba(25, 135, 84, 0.2);
+        color: #fff;
+    }
+
+    .status-badge.pending {
+        background: rgba(255, 193, 7, 0.2);
+        color: #fff;
+    }
+
+    .task-title {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .meta-info {
+        display: flex;
+        gap: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.875rem;
+    }
+
+    .info-section {
+        padding: 2rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .description-text {
+        color: #6c757d;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .timeline-item:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #dee2e6;
+    }
+
+    .timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .timeline-item:last-child:before {
+        display: none;
+    }
+
+    .timeline-icon {
+        position: absolute;
+        left: -0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #0d6efd;
+        border: 2px solid white;
+    }
+
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-date {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .due-date {
+        font-weight: 500;
+    }
+
+    .due-date.overdue {
+        color: #dc3545;
+    }
+
+    .due-date.upcoming {
+        color: #ffc107;
+    }
+
+    .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .progress-circle {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        background: conic-gradient(
+            #0d6efd var(--progress), 
+            #e9ecef var(--progress)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .progress-circle::before {
+        content: "";
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .progress-value {
+        position: relative;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #0d6efd;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="details-card">
+        <!-- Header Banner -->
+        <div class="header-banner">
+            <span class="status-badge @(Model.IsCompleted ? "completed" : "pending")">
+                @(Model.IsCompleted ? "Completed" : "In Progress")
+            </span>
+            <h1 class="task-title">@Model.Title</h1>
+            <div class="meta-info">
+                <span><i class="bi bi-clock me-1"></i>Created @Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</span>
+                @if (Model.UpdatedAt.HasValue)
+                {
+                    <span><i class="bi bi-pencil me-1"></i>Updated @Model.UpdatedAt.Value.ToLocalTime().ToString("MMM dd, yyyy")</span>
+                }
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="info-section">
+            <h2 class="section-title">
+                <i class="bi bi-card-text"></i>Description
+            </h2>
+            <p class="description-text">
+                @if (string.IsNullOrEmpty(Model.Description))
+                {
+                    <span class="text-muted fst-italic">No description provided</span>
+                }
+                else
+                {
+                    @Model.Description
+                }
+            </p>
+        </div>
+
+        <!-- Due Date & Progress Section -->
+        <div class="info-section">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="section-title">
+                        <i class="bi bi-calendar-event"></i>Due Date
+                    </h2>
+                    @{
+                        var dueDate = Model.DueDate.Date;
+                        var today = DateTime.Today;
+                        var daysUntilDue = (dueDate - today).Days;
+                        var dueDateClass = daysUntilDue < 0 ? "overdue" : 
+                                         daysUntilDue <= 3 ? "upcoming" : "";
+                    }
+                    <div class="due-date @dueDateClass">
+                        <i class="bi @(daysUntilDue < 0 ? "bi-exclamation-circle" : 
+                                      daysUntilDue <= 3 ? "bi-exclamation-triangle" : 
+                                      "bi-calendar") me-2"></i>
+                        @Model.DueDate.ToLocalTime().ToString("MMMM dd, yyyy")
+                        @if (daysUntilDue < 0)
+                        {
+                            <span class="text-danger">(@Math.Abs(daysUntilDue) days overdue)</span>
+                        }
+                        else if (daysUntilDue == 0)
+                        {
+                            <span class="text-warning">(Due today)</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">(@daysUntilDue days remaining)</span>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    @{
+                        var progressValue = Model.IsCompleted ? 100 : 
+                            Math.Max(0, Math.Min(100, (1 - (double)daysUntilDue / 30) * 100));
+                    }
+                    <div class="progress-circle" style="--progress: @(progressValue)%;">
+                        <span class="progress-value">@Math.Round(progressValue)%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="info-section">
+            <h2 class="section-title">
+                <i class="bi bi-clock-history"></i>Timeline
+            </h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon"></div>
+                    <div class="timeline-content">
+                        <strong>Task Created</strong>
+                    </div>
+                    <div class="timeline-date">
+                        @Model.CreatedAt.ToLocalTime().ToString("MMMM dd, yyyy HH:mm")
+                    </div>
+                </div>
+                @if (Model.UpdatedAt.HasValue)
+                {
+                    <div class="timeline-item">
+                        <div class="timeline-icon"></div>
+                        <div class="timeline-content">
+                            <strong>Last Modified</strong>
+                        </div>
+                        <div class="timeline-date">
+                            @Model.UpdatedAt.Value.ToLocalTime().ToString("MMMM dd, yyyy HH:mm")
+                        </div>
+                    </div>
+                }
+                <div class="timeline-item">
+                    <div class="timeline-icon"></div>
+                    <div class="timeline-content">
+                        <strong>Due Date</strong>
+                    </div>
+                    <div class="timeline-date">
+                        @Model.DueDate.ToLocalTime().ToString("MMMM dd, yyyy")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-lg btn-icon">
+                <i class="bi bi-pencil"></i>Edit
+            </a>
+            <button type="button" 
+                    class="btn btn-danger btn-lg btn-icon"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal" 
+                    data-task-id="@Model.Id"
+                    data-task-title="@Model.Title">
+                <i class="bi bi-trash"></i>Delete
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-lg btn-icon">
+                <i class="bi bi-arrow-left"></i>Back
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Delete Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-4">
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <h5>Are you sure?</h5>
+                <p class="text-muted">
+                    Do you really want to delete the task:<br>
+                    <strong><span id="taskTitle"></span></strong>?<br>
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <form asp-action="Delete" id="deleteForm">
+                    <input type="hidden" name="id" id="taskId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-icon">
+                        <i class="bi bi-trash"></i>Delete Task
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handle delete modal
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const taskId = button.data('task-id');
+                const taskTitle = button.data('task-title');
+                
+                const modal = $(this);
+                modal.find('#taskId').val(taskId);
+                modal.find('#taskTitle').text(taskTitle);
+            });
+        });
+    </script>
+}

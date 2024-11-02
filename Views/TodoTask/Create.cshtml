@@ -1,0 +1,226 @@
+@model TaskManager.Web.Models.ViewModels.CreateTodoTaskViewModel
+
+@{
+    ViewData["Title"] = "Create Task";
+}
+
+<style>
+    .form-card {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-floating > label {
+        padding-left: 1rem;
+    }
+    
+    .form-floating > .form-control {
+        padding: 1rem;
+        height: calc(3.5rem + 2px);
+    }
+    
+    .form-floating > textarea.form-control {
+        height: 100px;
+    }
+    
+    .field-validation-error {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .character-counter {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+
+    .form-section {
+        position: relative;
+        padding: 2rem;
+        margin-bottom: 1rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .form-section-icon {
+        position: absolute;
+        top: -1rem;
+        left: 1rem;
+        background: #0d6efd;
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custom-datepicker::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: auto;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: auto;
+    }
+
+    .datepicker-container {
+        position: relative;
+    }
+
+    .datepicker-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        pointer-events: none;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="form-card">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h1 class="h3 mb-2">Create New Task</h1>
+                    <p class="text-muted">Fill in the details below to create a new task</p>
+                </div>
+
+                <form asp-action="Create" id="createTaskForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <!-- Task Details Section -->
+                    <div class="form-section">
+                        <div class="form-section-icon">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        
+                        <!-- Title Field -->
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input asp-for="Title" class="form-control" placeholder="Enter task title" maxlength="100" />
+                                <label asp-for="Title">
+                                    <i class="bi bi-type me-1"></i>Task Title
+                                </label>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                                <div class="character-counter">
+                                    <span id="titleCounter">0</span>/100 characters
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <textarea asp-for="Description" class="form-control" 
+                                          placeholder="Enter task description" maxlength="500"
+                                          style="height: 120px"></textarea>
+                                <label asp-for="Description">
+                                    <i class="bi bi-card-text me-1"></i>Description
+                                </label>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <div class="character-counter">
+                                    <span id="descriptionCounter">0</span>/500 characters
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Due Date Field -->
+                        <div class="mb-3">
+                            <div class="form-floating datepicker-container">
+                                <input asp-for="DueDate" class="form-control custom-datepicker" 
+                                       type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                <label asp-for="DueDate">
+                                    <i class="bi bi-calendar-event me-1"></i>Due Date
+                                </label>
+                                <div class="datepicker-icon">
+                                    <i class="bi bi-calendar3"></i>
+                                </div>
+                            </div>
+                            <span asp-validation-for="DueDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-check-lg me-2"></i>Create Task
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="bi bi-x-lg me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Character counters
+            function updateCharacterCounter(input, counter) {
+                const currentLength = input.val().length;
+                counter.text(currentLength);
+                
+                if (currentLength >= parseInt(input.attr('maxlength'))) {
+                    counter.addClass('text-danger');
+                } else {
+                    counter.removeClass('text-danger');
+                }
+            }
+
+            // Title counter
+            const titleInput = $('#Title');
+            const titleCounter = $('#titleCounter');
+            titleInput.on('input', function() {
+                updateCharacterCounter(titleInput, titleCounter);
+            });
+            updateCharacterCounter(titleInput, titleCounter);
+
+            // Description counter
+            const descriptionInput = $('#Description');
+            const descriptionCounter = $('#descriptionCounter');
+            descriptionInput.on('input', function() {
+                updateCharacterCounter(descriptionInput, descriptionCounter);
+            });
+            updateCharacterCounter(descriptionInput, descriptionCounter);
+
+            // Set minimum date for the date picker
+            const today = new Date().toISOString().split('T')[0];
+            $('#DueDate').attr('min', today);
+
+            // Custom form validation
+            const form = $('#createTaskForm');
+            form.on('submit', function(e) {
+                if (!form[0].checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Add shake animation to invalid fields
+                    $('.is-invalid').closest('.form-section').addClass('animate__animated animate__shakeX');
+                    setTimeout(() => {
+                        $('.form-section').removeClass('animate__animated animate__shakeX');
+                    }, 1000);
+                }
+                form.addClass('was-validated');
+            });
+        });
+    </script>
+}

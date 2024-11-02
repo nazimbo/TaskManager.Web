@@ -1,0 +1,257 @@
+@model IEnumerable<TaskManager.Web.Models.Domain.TodoTask>
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<style>
+    .task-card {
+        transition: all 0.2s ease-in-out;
+    }
+    
+    .task-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.1)!important;
+    }
+
+    .due-date {
+        font-size: 0.875rem;
+    }
+
+    .due-date.overdue {
+        color: #dc3545;
+    }
+
+    .due-date.upcoming {
+        color: #ffc107;
+    }
+
+    .completed-task {
+        opacity: 0.7;
+    }
+
+    .task-checkbox {
+        width: 1.4rem;
+        height: 1.4rem;
+        cursor: pointer;
+    }
+
+    .task-actions {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .task-card:hover .task-actions {
+        opacity: 1;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 0.4em 0.8em;
+    }
+
+    .task-title {
+        color: #2c3e50;
+        text-decoration: none;
+    }
+
+    .task-title:hover {
+        color: #0d6efd;
+    }
+
+    .completed-task .task-title {
+        text-decoration: line-through;
+        color: #6c757d;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-2">My Tasks</h1>
+            <p class="text-muted mb-0">Manage and track your tasks effectively</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>New Task
+        </a>
+    </div>
+
+    <!-- Task List Section -->
+    <div class="row g-4">
+        @foreach (var item in Model.OrderBy(t => t.IsCompleted).ThenBy(t => t.DueDate))
+        {
+            <div class="col-12">
+                <div class="card task-card border-0 shadow-sm @(item.IsCompleted ? "completed-task" : "")">
+                    <div class="card-body d-flex align-items-center py-3">
+                        <!-- Checkbox -->
+                        <div class="me-3">
+                            <input type="checkbox" 
+                                   class="form-check-input task-checkbox task-status" 
+                                   data-task-id="@item.Id" 
+                                   @(item.IsCompleted ? "checked" : "")>
+                        </div>
+
+                        <!-- Task Info -->
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-1">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="task-title h5 mb-0">
+                                    @item.Title
+                                </a>
+                                <span class="badge rounded-pill @(item.IsCompleted ? "bg-success" : "bg-primary") status-badge ms-2">
+                                    @(item.IsCompleted ? "Completed" : "Active")
+                                </span>
+                            </div>
+                            <div class="text-muted small">
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    <span class="me-3" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                                        <i class="bi bi-card-text me-1"></i>@item.Description
+                                    </span>
+                                }
+                                <span class="due-date @(item.DueDate.Date < DateTime.Today ? "overdue" : item.DueDate.Date <= DateTime.Today.AddDays(3) ? "upcoming" : "")">
+                                    <i class="bi bi-calendar-event me-1"></i>Due @item.DueDate.ToString("MMM dd, yyyy")
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="task-actions">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <button type="button" 
+                                        class="btn btn-outline-danger btn-sm"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal" 
+                                        data-task-id="@item.Id"
+                                        data-task-title="@item.Title">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-clipboard-check text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">No Tasks Yet</h5>
+                        <p class="text-muted mb-3">Get started by creating your first task</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Create Task
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Delete Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Are you sure?</h5>
+                <p class="text-muted mb-0">Do you want to delete task: <strong><span id="taskTitle"></span></strong>?</p>
+            </div>
+            <div class="modal-footer border-0">
+                <form asp-action="Delete" id="deleteForm">
+                    <input type="hidden" name="id" id="taskId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Delete Task
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Handle task status toggle with animation
+        $('.task-status').change(function() {
+            const checkbox = $(this);
+            const taskId = checkbox.data('task-id');
+            const card = checkbox.closest('.task-card');
+            
+            card.css('opacity', '0.5');
+            
+            $.post(`/TodoTask/ToggleStatus/${taskId}`)
+                .done(function(response) {
+                    if (response.success) {
+                        card.toggleClass('completed-task');
+                        card.css('opacity', '1');
+                        
+                        // Update the status badge
+                        const badge = card.find('.status-badge');
+                        if (checkbox.prop('checked')) {
+                            badge.removeClass('bg-primary').addClass('bg-success').text('Completed');
+                        } else {
+                            badge.removeClass('bg-success').addClass('bg-primary').text('Active');
+                        }
+                    } else {
+                        checkbox.prop('checked', !checkbox.prop('checked'));
+                        card.css('opacity', '1');
+                        showToast('Failed to update task status', 'danger');
+                    }
+                })
+                .fail(function() {
+                    checkbox.prop('checked', !checkbox.prop('checked'));
+                    card.css('opacity', '1');
+                    showToast('Failed to update task status', 'danger');
+                });
+        });
+
+        // Handle delete modal
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            const taskId = button.data('task-id');
+            const taskTitle = button.data('task-title');
+            
+            const modal = $(this);
+            modal.find('#taskId').val(taskId);
+            modal.find('#taskTitle').text(taskTitle);
+        });
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = $(`
+                <div class="toast position-fixed bottom-0 end-0 m-3" role="alert">
+                    <div class="toast-header bg-${type} text-white">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                        <strong class="me-auto">Task Manager</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `);
+            
+            $('body').append(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.on('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
+    </script>
+}

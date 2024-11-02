@@ -1,0 +1,92 @@
+/* wwwroot/css/site.css */
+
+/* Global Styles */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: #f8f9fa;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+
+/* Task List Styles */
+.table td {
+    vertical-align: middle;
+}
+
+.task-status {
+    cursor: pointer;
+}
+
+.table tr:hover {
+    background-color: rgba(0,0,0,.03);
+}
+
+/* Task Card Styles */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+/* Form Styles */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Button Styles */
+.btn-group {
+    gap: 0.5rem;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-danger:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s;
+}
+
+/* Alert Styles */
+.alert {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Due Date Indicator */
+.due-date {
+    font-size: 0.875rem;
+}
+
+.due-date.overdue {
+    color: #dc3545;
+}
+
+.due-date.upcoming {
+    color: #ffc107;
+}
+
+/* Task Status Badge */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 1em;
+}
