@@ -1,59 +1,200 @@
-/* wwwroot/css/site.css */
-
 /* Global Styles */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
-  background-color: #f8f9fa;
+    margin-bottom: 60px;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Light mode defaults */
+:root {
+    --bs-body-bg: #f8f9fa;
+    --bs-body-color: #212529;
+    --bs-border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --header-gradient-start: #0d6efd;
+    --header-gradient-end: #0a58ca;
+    --timeline-bg: #f8f9fa;
+    --timeline-border: #dee2e6;
+    --progress-bg: #e9ecef;
+    --text-muted: #6c757d;
+    --hover-bg: rgba(0, 0, 0, 0.03);
+}
+
+/* Dark mode overrides */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #121212;
+    --bs-body-color: #e0e0e0;
+    --bs-border-color: #2d2d2d;
+    --card-bg: #1a1a1a;
+    --header-gradient-start: #1a1a1a;
+    --header-gradient-end: #2d2d2d;
+    --timeline-bg: #2d2d2d;
+    --timeline-border: #404040;
+    --progress-bg: #2d2d2d;
+    --text-muted: #999;
+    --hover-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* Navbar Dark Mode */
+[data-bs-theme="dark"] .navbar {
+    background-color: var(--card-bg) !important;
+}
+
+/* Card Dark Mode */
+[data-bs-theme="dark"] .card {
+    background-color: var(--card-bg);
+    border-color: var(--bs-border-color);
+}
+
+/* Form Controls Dark Mode */
+[data-bs-theme="dark"] .form-control {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #2d2d2d;
+    border-color: #0d6efd;
+    color: var(--bs-body-color);
+}
+
+/* Button Dark Mode */
+[data-bs-theme="dark"] .btn-outline-secondary {
+    color: var(--bs-body-color);
+    border-color: #404040;
+}
+
+/* Modal Dark Mode */
+[data-bs-theme="dark"] .modal-content {
+    background-color: var(--card-bg);
+}
+
+/* Task Title Dark Mode */
+[data-bs-theme="dark"] .task-title {
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .completed-task .task-title {
+    color: var(--text-muted);
+}
+
+/* Form Floating Labels Dark Mode */
+[data-bs-theme="dark"] .form-floating > label {
+    color: var(--text-muted);
+}
+
+[data-bs-theme="dark"] .form-section {
+    background-color: var(--card-bg);
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Details View Dark Mode */
+[data-bs-theme="dark"] .details-card {
+    background-color: var(--card-bg);
+}
+
+[data-bs-theme="dark"] .header-banner {
+    background: linear-gradient(45deg, var(--header-gradient-start), var(--header-gradient-end));
+}
+
+[data-bs-theme="dark"] .timeline-content {
+    background: var(--timeline-bg);
+}
+
+[data-bs-theme="dark"] .timeline-item:before {
+    background: var(--timeline-border);
+}
+
+[data-bs-theme="dark"] .progress-circle {
+    background: conic-gradient(
+        #0d6efd var(--progress),
+        var(--progress-bg) var(--progress)
+    );
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Smooth Transitions */
+.card, 
+.navbar, 
+.modal-content, 
+.form-control, 
+.details-card,
+.header-banner,
+.timeline-content,
+.action-buttons,
+.progress-circle,
+.info-section {
+    transition: background-color 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease;
+}
+
+/* Footer Styles */
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color);
 }
 
-/* Task List Styles */
-.table td {
-    vertical-align: middle;
-}
-
+/* Task Status Styles */
 .task-status {
     cursor: pointer;
 }
 
+/* Table Hover Effect */
 .table tr:hover {
-    background-color: rgba(0,0,0,.03);
+    background-color: var(--hover-bg);
 }
 
-/* Task Card Styles */
+/* Card Shadow */
 .card {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     border: none;
+    background-color: var(--card-bg);
 }
 
-.card-header {
-    background-color: #fff;
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-
-/* Form Styles */
+/* Form Control Focus */
 .form-control:focus {
     border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* Button Styles */
+/* Button Groups */
 .btn-group {
     gap: 0.5rem;
 }
 
+/* Button Hover Effects */
 .btn-outline-primary:hover, 
 .btn-outline-danger:hover {
     transform: translateY(-1px);
@@ -70,11 +211,13 @@ body {
 .modal-content {
     border: none;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    background-color: var(--card-bg);
 }
 
-/* Due Date Indicator */
+/* Due Date Indicators */
 .due-date {
     font-size: 0.875rem;
+    color: var(--text-muted);
 }
 
 .due-date.overdue {

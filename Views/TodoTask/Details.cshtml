@@ -8,17 +8,19 @@
     .details-card {
         max-width: 800px;
         margin: 0 auto;
-        background: white;
+        background: var(--card-bg);
         border-radius: 1rem;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         overflow: hidden;
+        transition: background-color 0.3s ease;
     }
 
     .header-banner {
-        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        background: linear-gradient(45deg, var(--header-gradient-start), var(--header-gradient-end));
         padding: 2rem;
         color: white;
         position: relative;
+        transition: background 0.3s ease;
     }
 
     .status-badge {
@@ -31,6 +33,7 @@
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        transition: background-color 0.3s ease;
     }
 
     .status-badge.completed {
@@ -47,6 +50,7 @@
         font-size: 1.75rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
+        color: white;
     }
 
     .meta-info {
@@ -58,7 +62,8 @@
 
     .info-section {
         padding: 2rem;
-        border-bottom: 1px solid #e9ecef;
+        border-bottom: 1px solid var(--bs-border-color);
+        transition: border-color 0.3s ease;
     }
 
     .info-section:last-child {
@@ -68,17 +73,19 @@
     .section-title {
         font-size: 1rem;
         font-weight: 600;
-        color: #495057;
+        color: var(--bs-body-color);
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        transition: color 0.3s ease;
     }
 
     .description-text {
-        color: #6c757d;
+        color: var(--text-muted);
         line-height: 1.6;
         white-space: pre-wrap;
+        transition: color 0.3s ease;
     }
 
     .timeline-item {
@@ -94,7 +101,8 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: #dee2e6;
+        background: var(--timeline-border);
+        transition: background-color 0.3s ease;
     }
 
     .timeline-item:last-child {
@@ -112,23 +120,28 @@
         height: 1rem;
         border-radius: 50%;
         background: #0d6efd;
-        border: 2px solid white;
+        border: 2px solid var(--card-bg);
+        transition: border-color 0.3s ease;
     }
 
     .timeline-content {
-        background: #f8f9fa;
+        background: var(--timeline-bg);
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 0.5rem;
+        transition: background-color 0.3s ease;
     }
 
     .timeline-date {
         font-size: 0.75rem;
-        color: #6c757d;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
     }
 
     .due-date {
         font-weight: 500;
+        color: var(--bs-body-color);
+        transition: color 0.3s ease;
     }
 
     .due-date.overdue {
@@ -142,12 +155,13 @@
     .action-buttons {
         position: sticky;
         bottom: 0;
-        background: white;
+        background: var(--card-bg);
         padding: 1rem;
         box-shadow: 0 -0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         display: flex;
         justify-content: center;
         gap: 0.5rem;
+        transition: background-color 0.3s ease;
     }
 
     .btn-icon {
@@ -162,12 +176,13 @@
         position: relative;
         background: conic-gradient(
             #0d6efd var(--progress), 
-            #e9ecef var(--progress)
+            var(--progress-bg) var(--progress)
         );
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background 0.3s ease;
     }
 
     .progress-circle::before {
@@ -175,8 +190,9 @@
         position: absolute;
         width: 90px;
         height: 90px;
-        background: white;
+        background: var(--card-bg);
         border-radius: 50%;
+        transition: background-color 0.3s ease;
     }
 
     .progress-value {
@@ -184,6 +200,36 @@
         font-size: 1.5rem;
         font-weight: 600;
         color: #0d6efd;
+        transition: color 0.3s ease;
+    }
+
+    /* Delete Modal Dark Mode Styles */
+    .modal-content {
+        background: var(--card-bg);
+        transition: background-color 0.3s ease;
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: var(--bs-border-color);
+        transition: border-color 0.3s ease;
+    }
+
+    /* Dark mode specific overrides */
+    [data-bs-theme="dark"] .modal-content {
+        background: var(--card-bg);
+    }
+
+    [data-bs-theme="dark"] .text-muted {
+        color: var(--text-muted) !important;
+    }
+
+    [data-bs-theme="dark"] .status-badge.completed {
+        background: rgba(25, 135, 84, 0.3);
+    }
+
+    [data-bs-theme="dark"] .status-badge.pending {
+        background: rgba(255, 193, 7, 0.3);
     }
 </style>
 
@@ -328,7 +374,7 @@
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0">
+        <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title">Delete Task</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
